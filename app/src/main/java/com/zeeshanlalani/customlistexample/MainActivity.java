@@ -1,9 +1,12 @@
 package com.zeeshanlalani.customlistexample;
 
 import android.app.ProgressDialog;
+import android.content.Intent;
 import android.os.AsyncTask;
 import android.support.v7.app.AppCompatActivity;
 import android.os.Bundle;
+import android.view.View;
+import android.widget.Button;
 import android.widget.ListView;
 
 import com.zeeshanlalani.customlistexample.Adaptors.CustomAdaptor;
@@ -25,13 +28,25 @@ import java.util.List;
 public class MainActivity extends AppCompatActivity {
 
     ListView list_view;
+    getData g;
+    Button add_students;
     @Override
     protected void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
         setContentView(R.layout.activity_main);
 
         list_view = (ListView)findViewById(R.id.list_view);
-        new getData().execute();
+        g = new getData();
+        g.execute();
+
+        add_students = (Button) findViewById(R.id.add_students);
+        add_students.setOnClickListener(new View.OnClickListener() {
+            @Override
+            public void onClick(View view) {
+                Intent i = new Intent(MainActivity.this, AddStudents.class);
+                startActivity(i);
+            }
+        });
     }
 
     private void getData() {
@@ -54,7 +69,7 @@ public class MainActivity extends AppCompatActivity {
         @Override
         protected Void doInBackground(Void... voids) {
             try {
-                URL url = new URL("https://api.androidhive.info/contacts/");
+                URL url = new URL("http://10.0.2.2:3000/api/student");
                 HttpURLConnection con = (HttpURLConnection) url.openConnection();
                 con.setRequestMethod("GET");
 
@@ -75,14 +90,14 @@ public class MainActivity extends AppCompatActivity {
                 JSONObject resp = bufferToJson(br);
 
                 // Getting JSON Array node
-                JSONArray contacts = resp.getJSONArray("contacts");
+                JSONArray students = resp.getJSONArray("data");
 
                 // looping through All Contacts
-                for (int i = 0; i < contacts.length(); i++) {
-                    JSONObject c = contacts.getJSONObject(i);
+                for (int i = 0; i < students.length(); i++) {
+                    JSONObject s = students.getJSONObject(i);
 
-                    String id = c.getString("id");
-                    String name = c.getString("name");
+                    String id = s.getString("_id");
+                    String name = s.getString("firstName") + " " + s.getString("lastName");
                     Person p = new Person(id, name);
                     list.add(i, p);
                 }

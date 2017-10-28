@@ -1,6 +1,7 @@
 package com.zeeshanlalani.customlistexample.Adaptors;
 
 import android.content.Context;
+import android.support.v7.app.AlertDialog;
 import android.view.LayoutInflater;
 import android.view.View;
 import android.view.ViewGroup;
@@ -23,14 +24,13 @@ import java.util.List;
 public class CustomAdaptor extends BaseAdapter {
 
     Context context;
-    String[] student_names;
-    String[] ids;
-    LayoutInflater inflater;
-    List<Person> list;
 
-    public CustomAdaptor(Context _context, List<Person> contacts) {
+    LayoutInflater inflater;
+    List<Person> persons;
+
+    public CustomAdaptor(Context _context, List<Person> _persons) {
         context = _context;
-        list = contacts;
+        persons = _persons;
 
         inflater = (LayoutInflater)context.
                 getSystemService(Context.LAYOUT_INFLATER_SERVICE);
@@ -39,7 +39,7 @@ public class CustomAdaptor extends BaseAdapter {
 
     @Override
     public int getCount() {
-        return list.size() + 1;
+        return persons.size() + 1;
     }
 
     @Override
@@ -62,9 +62,19 @@ public class CustomAdaptor extends BaseAdapter {
             TextView txtName = (TextView) rowView.findViewById(R.id.student_name);
             TextView txtId = (TextView) rowView.findViewById(R.id.student_id);
 
-            Person p = list.get(position-1);
+            final Person p = persons.get(position-1);
             txtName.setText(p.name);
             txtId.setText(p.id);
+
+            rowView.setOnClickListener(new View.OnClickListener() {
+                @Override
+                public void onClick(View view) {
+                    AlertDialog.Builder builder = new AlertDialog.Builder(context);
+                    builder.setMessage(p.name);
+                    builder.show();
+                }
+            });
+
         }
 
         return rowView;
