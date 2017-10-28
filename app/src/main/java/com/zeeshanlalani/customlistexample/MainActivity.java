@@ -29,15 +29,30 @@ public class MainActivity extends AppCompatActivity {
 
     ListView list_view;
     getData g;
-    Button add_students;
+    Button add_students, refresh;
     @Override
     protected void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
         setContentView(R.layout.activity_main);
 
         list_view = (ListView)findViewById(R.id.list_view);
-        g = new getData();
-        g.execute();
+        // g = new getData();
+        // g.execute();
+
+        DatabaseHandler db = new DatabaseHandler(getApplicationContext());
+        List<Person> students = db.getAllStudents();
+
+        list_view.setAdapter(new CustomAdaptor(MainActivity.this, students));
+
+        refresh = (Button) findViewById(R.id.refresh);
+        refresh.setOnClickListener(new View.OnClickListener() {
+            @Override
+            public void onClick(View view) {
+                DatabaseHandler db = new DatabaseHandler(getApplicationContext());
+                List<Person> students = db.getAllStudents();
+                list_view.setAdapter(new CustomAdaptor(MainActivity.this, students));
+            }
+        });
 
         add_students = (Button) findViewById(R.id.add_students);
         add_students.setOnClickListener(new View.OnClickListener() {
@@ -47,6 +62,7 @@ public class MainActivity extends AppCompatActivity {
                 startActivity(i);
             }
         });
+
     }
 
     private void getData() {

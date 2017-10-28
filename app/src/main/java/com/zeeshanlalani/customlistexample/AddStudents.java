@@ -35,10 +35,17 @@ public class AddStudents extends AppCompatActivity {
             public void onClick(View view) {
                 String firstName = txtFirstName.getText().toString();
                 String lastName = txtLastName.getText().toString();
-                new PostData(firstName,lastName).execute();
-
+                //new PostData(firstName,lastName).execute();
+                saveData(firstName, lastName);
             }
         });
+    }
+
+    public void saveData(String firstName, String lastName) {
+        DatabaseHandler db = new DatabaseHandler(getApplicationContext());
+        db.addStudent("123", firstName, lastName);
+
+
     }
 
     private class PostData extends AsyncTask<Void, Void, Void> {
